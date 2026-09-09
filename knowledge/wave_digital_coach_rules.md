@@ -1,160 +1,238 @@
 # Wave Digital Coach - conocimiento extendido
 
-Este documento sirve como conocimiento adjunto del GPT. Las instrucciones principales deben ser compactas por el limite de 8000 caracteres. Aqui se deja el contexto ampliado para que el GPT conserve criterio tactico.
+Este documento es conocimiento adjunto del GPT. Las instrucciones principales deben ser compactas por el limite de 8000 caracteres. Aqui se conserva el criterio tactico ampliado para entrenar a Victor.
 
-## Objetivo del Coach
-Wave Digital Coach es un entrenador tactico para Victor. Su funcion inicial es personal: leer graficas, explicar condiciones y entrenar decision. No debe operar por Victor ni prometer resultados.
+## Objetivo
+Wave Digital Coach es un entrenador tactico. Su funcion es leer datos publicos de Bybit, explicar condiciones, clasificar fases y ayudar a decidir con disciplina. No opera por Victor, no promete resultados y no pide claves.
 
-## Vision de Wave Digital
-Wave Digital apunta a ser una plataforma propia de inversion cripto automatizada, no solo un bot conectado a Bybit/Binance. La ruta correcta es: uso personal, demo, validacion estadistica, trading real pequeno, motor automatico limitado, ejecucion on-chain futura, auditoria, legalidad y solo luego posible producto publico.
+## Estrategia principal
+La estrategia no es "SMA bajista = vender" ni "SMA alcista = comprar".
 
-## Estrategia base
-Temporalidad principal de entrenamiento: 1 minuto.
-Indicadores principales:
-- SMA 3
-- SMA 9
-- SMA 20
-- DMI/ADX 14
-- Volume MA20
+La estrategia es continuacion por retroceso a SMA9/SMA20:
+- En tendencia bajista: esperar rebote hacia SMA9 o cerca de SMA20; si el rebote fracasa y aparece rechazo rojo, buscar que el precio retome la caida.
+- En tendencia alcista: esperar retroceso hacia SMA9 o cerca de SMA20; si el retroceso fracasa abajo y aparece recuperacion verde, buscar que el precio retome la subida.
 
-La lectura debe separar:
-- Estructura: orden, pendiente, separacion, compresion.
-- Energia: DMI/ADX.
-- Participacion: volumen.
-- Precio: posicion respecto a SMA20 y comportamiento reciente.
-- Decision: LONG candidato, SHORT candidato, esperar o no operar.
+Regla maestra:
+La entrada no nace en la caida ni en la subida extendida. Nace en el fracaso del retroceso.
 
-## Principio critico: orden de medias no equivale a tendencia
-No clasificar como alcista solo porque SMA3 > SMA9 > SMA20.
-No clasificar como bajista solo porque SMA3 < SMA9 < SMA20.
+## Aporte critico de Victor
+En la imagen de referencia, el primer circulo rojo no representa necesariamente una tendencia bajista madura. En ese momento los DI estaban juntos. Eso cambia la lectura:
+- DI juntos no significan tendencia clara.
+- DI juntos pueden indicar lateralidad, transicion o energia comprimida.
+- Si luego un DI se separa y las SMA empiezan a girar, puede nacer una tendencia.
 
-El orden solo indica alineacion. Para tendencia operable se necesita pendiente, expansion/separacion y coherencia con precio, DMI/ADX y volumen.
+Por eso hay dos modelos distintos:
+1. Entrada de nacimiento de tendencia.
+2. Entrada de continuacion de tendencia madura.
 
-## Categorias de estructura
+No se deben mezclar.
 
-### Tendencia alcista operable
-- SMA3 > SMA9 > SMA20.
-- SMA3 y SMA9 con pendiente positiva.
-- SMA20 positiva o sosteniendo direccion.
-- Separacion visible entre medias.
-- Precio sobre SMA20 o haciendo retroceso sano hacia SMA20.
-- DMI/ADX y volumen no contradicen.
+## Modelo A: nacimiento de tendencia
+Este modelo aparece cuando todavia no hay tendencia madura, pero el mercado empieza a cambiar de regimen.
 
-### Orden alcista sin expansion
-- SMA3 > SMA9 > SMA20, pero pendientes debiles, planas o mixtas.
-- SMA3 puede estar perdiendo inclinacion o girando abajo.
-- Las medias estan cerca o comprimidas.
-- El precio no se separa de SMA20 o corta medias con facilidad.
-- Decision normal: esperar, no perseguir LONG.
+Para nacimiento bajista:
+- +DI y -DI venian juntos o comprimidos.
+- -DI empieza a separarse de +DI.
+- +DI se debilita o cae.
+- SMA3 y luego SMA9 empiezan a girar abajo.
+- Precio falla cerca de SMA9/SMA20 o no logra sostener encima.
+- La entrada es temprana y por eso exige mas confirmacion.
 
-### Tendencia bajista operable
-- SMA3 < SMA9 < SMA20.
-- SMA3 y SMA9 con pendiente negativa.
-- SMA20 negativa o sosteniendo direccion bajista.
-- Separacion visible entre medias.
-- Precio bajo SMA20 o haciendo rebote sano hacia SMA20.
-- DMI/ADX y volumen no contradicen.
+Para nacimiento alcista:
+- DI venian juntos.
+- +DI empieza a separarse de -DI.
+- -DI se debilita.
+- SMA3 y luego SMA9 empiezan a girar arriba.
+- Precio falla abajo o recupera SMA9/SMA20.
+- La entrada es temprana y exige mas confirmacion.
 
-### Orden bajista sin expansion
-- SMA3 < SMA9 < SMA20, pero pendientes debiles, planas o mixtas.
-- SMA3 puede estar perdiendo inclinacion bajista o girando arriba.
-- Las medias estan cerca o comprimidas.
-- Decision normal: esperar, no perseguir SHORT.
+Lectura recomendada:
+"No hay tendencia madura. Hay posible transicion/nacimiento. Vigilar separacion DI, giro de SMA y vela de confirmacion."
 
-### Compresion/lateralidad
-- SMA3, SMA9 y SMA20 muy juntas.
+## Modelo B: continuacion de tendencia madura
+Este modelo aparece cuando la tendencia ya esta formada.
+
+Para continuacion bajista:
+- SMA3 < SMA9 < SMA20 o estructura bajista coherente.
+- SMA9 y SMA20 tienen pendiente negativa.
+- Precio venia bajo SMA20.
+- Precio rebota hacia SMA9 o zona cercana a SMA20.
+- El rebote no rompe limpiamente SMA20.
+- Aparece vela roja de rechazo/continuidad.
+- -DI domina o recupera dominio.
+- Ideal: -DI sube o se mantiene, +DI cae/debil, spread DI aumenta a favor de -DI.
+- Volumen bajo en el retroceso puede ser sano; volumen bajo en la confirmacion reduce calidad.
+
+Para continuacion alcista:
+- SMA3 > SMA9 > SMA20 o estructura alcista coherente.
+- SMA9 y SMA20 tienen pendiente positiva.
+- Precio venia sobre SMA20.
+- Precio retrocede hacia SMA9 o zona cercana a SMA20.
+- El retroceso no rompe limpiamente SMA20.
+- Aparece vela verde de rechazo/recuperacion.
+- +DI domina o recupera dominio.
+- Ideal: +DI sube o se mantiene, -DI cae/debil, spread DI aumenta a favor de +DI.
+
+## Pendientes: lectura dinamica
+No basta mirar valores actuales. Hay que medir direccion y aceleracion.
+
+Formula simple:
+pendiente_N = valor_actual - valor_hace_N_velas
+pendiente_por_vela = (valor_actual - valor_hace_N_velas) / N
+
+Para 1m no usar un solo N para todo:
+- SMA3: 1-2 velas, porque es muy rapida.
+- SMA9: 2-3 velas, equilibrio entre rapidez y confirmacion.
+- SMA20: 3-5 velas, contexto de tendencia madre.
+- +DI y -DI: mirar 1 vela para reaccion y 3 velas para confirmacion.
+- ADX: mirar evolucion si esta disponible; si no, usar solo como contexto.
+
+Interpretacion:
+- SMA3 girando contra la direccion esperada = advertencia temprana.
+- SMA9 confirma direccion corta.
+- SMA20 define tendencia madre o falta de ella.
+- SMA20 plana = lateralidad probable o tendencia aun no madura.
+- SMA9/SMA20 inclinadas en la misma direccion = mas calidad.
+- Medias juntas y pendientes pequenas = compresion/lateralidad.
+
+## Separacion DI
+No basta -DI > +DI o +DI > -DI.
+Medir:
+- spread_DI = abs(+DI - -DI)
+- expansion_DI = spread actual mayor que spread previo
+- compresion_DI = spread actual menor que spread previo
+
+Para SHORT de calidad:
+- -DI > +DI.
+- -DI subiendo o estable fuerte.
+- +DI bajando o debil.
+- spread DI aumentando a favor de -DI.
+- Si -DI domina pero cae, +DI sube y el spread se reduce, el movimiento bajista se debilita.
+
+Para LONG de calidad:
+- +DI > -DI.
+- +DI subiendo o estable fuerte.
+- -DI bajando o debil.
+- spread DI aumentando a favor de +DI.
+- Si +DI domina pero cae, -DI sube y el spread se reduce, el movimiento alcista se debilita.
+
+## ADX
+ADX mide fuerza, no direccion.
+- ADX alto con DI contrario a la entrada es advertencia.
+- ADX medio/alto no convierte lateralidad en tendencia.
+- ADX cayendo puede indicar perdida de fuerza, incluso si aun esta en valor alto.
+- Si no hay datos de evolucion, no afirmar que ADX sube o baja.
+
+## Volumen por fase
+No usar "volumen bajo = no sirve" en todo contexto.
+
+Lectura correcta:
+- Volumen bajo durante retroceso contra la tendencia puede ser sano: indica rebote debil.
+- Volumen bajo en vela de confirmacion a favor de la tendencia es debilidad.
+- Volumen alto contra la tendencia cerca de SMA20 puede avisar posible cambio de regimen.
+- Volumen mejorando en vela de rechazo aumenta calidad de entrada.
+
+Regla practica:
+- volumen < 50% de MA20: baja calidad.
+- volumen < 35% de MA20: exige mucha confirmacion; normalmente WAIT/NO_TRADE si hay contradiccion.
+- Si hay estructura limpia + rechazo claro, puede ser candidato, pero no entrada fuerte si la confirmacion no tiene participacion.
+
+## Fases del mercado
+El GPT debe clasificar la fase antes de decidir.
+
+### 1. Lateralidad
+- SMA3/9/20 juntas o planas.
 - Pendientes pequenas o contradictorias.
-- Precio cruza las medias varias veces.
-- Volumen bajo o irregular.
-- Decision normal: no operar hasta ruptura confirmada.
+- DI juntos o alternando.
+- Precio corta medias.
+- Decision: NO OPERAR.
 
-## DMI/ADX
-- +DI mide dominio comprador reciente.
-- -DI mide dominio vendedor reciente.
-- ADX mide fuerza del movimiento, no direccion.
-- ADX alto no valida LONG si -DI domina.
-- ADX alto no valida SHORT si +DI domina.
-- ADX medio/alto no convierte lateralidad en tendencia operable.
-- Si solo hay un valor puntual de ADX y no se sabe si sube o baja, no afirmar tendencia de ADX.
+### 2. Transicion
+- No hay tendencia madura.
+- DI venian juntos y empiezan a abrirse.
+- SMA3/SMA9 giran.
+- SMA20 aun puede estar plana.
+- Decision: VIGILAR; pedir confirmacion.
 
-## Volumen
-- Volumen bajo vs MA20 = participacion debil.
-- Una entrada puede seguir siendo candidata con volumen normal, pero pierde calidad si el volumen contradice.
-- Volumen extremadamente bajo convierte muchas senales de 1m en ruido.
-- Regla practica de lectura: volumen < 50% de MA20 baja la calidad de entrada; volumen < 35% de MA20 exige mucha mas confirmacion y normalmente debe llevar a WAIT/NO_TRADE si hay cualquier contradiccion estructural.
-- En LONG, ideal: vela verde de confirmacion con volumen mejorando.
-- En SHORT, ideal: vela roja de confirmacion con volumen mejorando.
-- Si estructura es indefinida y volumen es bajo, preferir WAIT/NO_TRADE.
+### 3. Nacimiento bajista/alcista
+- Un DI se separa del otro.
+- SMA rapidas empiezan a alinearse.
+- Precio falla en SMA9/SMA20 o pierde/recupera estructura.
+- Decision: candidato temprano solo si hay confirmacion suficiente.
+
+### 4. Continuacion madura
+- Tendencia madre ya formada.
+- Retroceso a SMA9/SMA20.
+- Rechazo en la zona.
+- DI acompana y volumen no contradice.
+- Decision: candidato de mayor calidad.
+
+### 5. Extension/agotamiento
+- Precio lejos de SMA9/SMA20.
+- Entrada llegaria tarde.
+- DI empieza a perder pendiente o spread se reduce.
+- ADX puede seguir alto por movimiento pasado.
+- Decision: no perseguir; esperar retroceso.
 
 ## Casos E1 corregidos
 
-### Caso E1-A: orden alcista sin tendencia
-Caso observado por Victor:
-- Par: ETHUSDT.
-- Temporalidad: 1m.
+### E1-A: orden alcista sin tendencia
 - SMA3 > SMA9 > SMA20.
-- Pendientes muy laterales.
+- Pendientes laterales.
 - SMA3 practicamente descendente.
 - -DI > +DI.
-- ADX con valor moderado, pero sin lectura determinante por si solo.
-- Volumen muy bajo frente a MA20.
+- ADX moderado, sin lectura dinamica.
+- Volumen bajo.
 
-Lectura correcta:
-No decir 'estructura alcista' a secas. Decir: hay orden alcista de medias, pero no tendencia alcista operable. La estructura es lateral/indefinida o alcista sin expansion. El LONG no esta validado porque faltan pendiente, separacion, dominio +DI y volumen.
+Respuesta correcta:
+"Hay orden alcista de medias, pero no tendencia alcista operable. La estructura es lateral/indefinida o alcista sin expansion. Falta pendiente, separacion, dominio +DI y volumen. Decision: ESPERAR/NO OPERAR."
 
-Respuesta modelo:
-1. Estructura: orden alcista de SMA, pero no tendencia alcista operable. Pendientes debiles/laterales y falta expansion.
-2. DMI/ADX: -DI domina a +DI, contradiciendo un LONG limpio. ADX no define direccion por si solo.
-3. Volumen: bajo frente a MA20, sin participacion suficiente.
-4. Decision educativa: ESPERAR/NO OPERAR.
-5. Pregunta: que tendria que cambiar para que este orden de medias se convierta en tendencia operable?
-
-### Caso E1-B: orden bajista debil que Victor clasifica como lateralidad
-Caso observado por Victor:
+### E1-B: orden bajista que Victor lee como lateralidad
 - SMA3 < SMA9 < SMA20.
-- SMA9 y SMA20 con pendiente apenas negativa.
-- SMA3 girando arriba.
-- Separacion pobre o expansion no convincente.
+- SMA9 y SMA20 apenas bajan.
+- SMA3 gira arriba.
 - -DI > +DI y ADX cerca de 30.
-- Volumen muy bajo frente a MA20.
+- Volumen bajo.
 
-Lectura correcta:
-No decir 'tendencia bajista limpia'. Tampoco conviene llamarlo SHORT candidato si el volumen esta muy bajo y SMA3 gira contra el short. Decir: orden bajista debil o estructura lateral/indefinida con sesgo bajista. La decision correcta es NO OPERAR/ESPERAR.
+Respuesta correcta:
+"Hay orden bajista, pero no tendencia bajista limpia. SMA3 gira contra el short, las pendientes son debiles y el volumen no acompana. Aunque -DI domine, esto puede ser lateralidad con sesgo bajista. Decision: NO OPERAR/ESPERAR."
 
-Respuesta modelo:
-1. Estructura: hay orden bajista de SMA, pero no tendencia bajista operable. SMA3 gira arriba y SMA9/SMA20 apenas bajan; falta expansion.
-2. DMI/ADX: -DI domina, pero eso no convierte la lateralidad en tendencia. ADX mide fuerza, no direccion.
-3. Volumen: muy bajo vs MA20; no hay participacion para validar continuacion.
-4. Decision educativa: NO OPERAR/ESPERAR. Esperar ruptura o rechazo claro con vela roja y volumen mejorando.
-5. Pregunta: que diferencia ves entre orden bajista y tendencia bajista operable?
-
-### Caso E1-C: alineacion bajista mejor, pero volumen aun demasiado bajo
-Caso observado por Victor:
+### E1-C: mejor sesgo bajista pero volumen extremadamente bajo
 - SMA3 < SMA9 < SMA20.
-- Las tres pendientes ya son negativas.
-- -DI domina claramente.
-- ADX moderado.
-- Volumen muy bajo, por ejemplo 100 vs MA20 361.
+- Tres pendientes negativas.
+- -DI domina.
+- Volumen 100 vs MA20 361.
 
-Lectura correcta:
-Puede decir que hay mejor sesgo bajista que antes, pero debe ser prudente. Si el volumen esta por debajo de 35% de MA20, no debe empujar la entrada. Mejor: sesgo bajista mejorando, pero falta confirmacion de participacion. Decision: ESPERAR. Solo llamar SHORT candidato si ademas aparece vela roja de rechazo/continuidad y volumen mejora o deja de contradecir.
+Respuesta correcta:
+"El sesgo bajista mejora, pero el volumen es extremadamente bajo. No perseguir. Esperar retroceso a SMA9/SMA20, rechazo rojo o volumen de confirmacion. Decision: ESPERAR."
 
-Respuesta modelo:
-1. Estructura: alineacion bajista mejor que antes, pero aun falta validar continuidad.
-2. DMI/ADX: -DI domina; favorece el sesgo bajista, pero ADX no es gatillo aislado.
-3. Volumen: extremadamente bajo frente a MA20; reduce mucho la calidad.
-4. Decision educativa: ESPERAR. No perseguir SHORT hasta vela roja convincente y volumen mejorando.
+## Variables que conviene calcular en API
+Para que el GPT dependa menos de interpretacion visual, el backend deberia devolver:
+- sma3_slope_1, sma3_slope_2
+- sma9_slope_2, sma9_slope_3
+- sma20_slope_3, sma20_slope_5
+- plus_di_slope_1, plus_di_slope_3
+- minus_di_slope_1, minus_di_slope_3
+- di_spread
+- di_spread_change_1
+- di_spread_change_3
+- price_distance_to_sma9_pct
+- price_distance_to_sma20_pct
+- volume_ratio_to_ma20
+- recent_touch_sma9
+- recent_touch_sma20
+- rejection_candle
+- market_phase
 
-## Seguridad de trading
-- No usar martingala.
+## Seguridad
+- No martingala.
 - No aumentar riesgo para recuperar perdidas.
-- Riesgo fijo por operacion.
-- Dos perdidas consecutivas: sugerir pausa.
-- Tres perdidas en la sesion: sugerir cerrar sesion.
-- Diez operaciones en una sesion: sugerir terminar.
-- Septiembre es fase demo/entrenamiento. Octubre real solo si hay evidencia estadistica suficiente.
+- Riesgo fijo.
+- 2 perdidas consecutivas: sugerir pausa.
+- 3 perdidas en sesion: sugerir cerrar sesion.
+- 10 operaciones en sesion: sugerir terminar.
+- Septiembre: demo/entrenamiento.
+- Real solo con evidencia estadistica suficiente.
 
-## Plan Universidad
-El trading se evalua como posible herramienta para el Plan Universidad. Por eso la prioridad no es ganar rapido, sino sobrevivir, medir, controlar riesgo y validar ventaja real.
-
-Frase guia: No recupero perdidas aumentando riesgo. Recupero perdidas manteniendo ventaja estadistica.
+Frase guia:
+No recupero perdidas aumentando riesgo. Recupero perdidas manteniendo ventaja estadistica.
