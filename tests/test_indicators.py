@@ -15,3 +15,12 @@ def test_assess_structure_runs():
     assert "setup" in result
     assert "sma" in result
     assert "dmi_adx" in result
+    assert "operational_view" in result
+    assert "sma3_slope_1_pct" in result["sma"]
+    assert "sma9_slope_2_pct" in result["sma"]
+    assert "sma20_slope_5_pct" in result["sma"]
+    assert "plus_di_slope_1" in result["dmi_adx"]
+    assert "minus_di_slope_1" in result["dmi_adx"]
+    assert "di_spread" in result["dmi_adx"]
+    assert "ratio_to_ma20_pct" in result["volume"]
+    assert result["operational_view"]["sma20"]["sticker"] is not None
