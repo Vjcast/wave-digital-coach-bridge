@@ -1,0 +1,114 @@
+openapi: 3.1.0
+info:
+  title: Wave Digital Coach Bridge
+  version: 0.1.0
+  description: Read-only market-data bridge for the Wave Digital Coach GPT. It does not place orders or access funds.
+servers:
+  - url: https://TU-DOMINIO-RENDER.onrender.com
+paths:
+  /health:
+    get:
+      operationId: health
+      summary: Check API health
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  service:
+                    type: string
+  /market-state:
+    get:
+      operationId: getMarketState
+      summary: Get candles and Wave Digital 1M analysis
+      description: Fetches public Bybit klines and calculates SMA 3/9/20, DMI/ADX and Volume MA20.
+      parameters:
+        - name: symbol
+          in: query
+          required: false
+          schema:
+            type: string
+            default: BTCUSDT
+            enum: [BTCUSDT, ETHUSDT, SOLUSDT, XRPUSDT, ADAUSDT]
+        - name: interval
+          in: query
+          required: false
+          schema:
+            type: string
+            default: '1'
+            enum: ['1', '3', '5', '15', '30', '60', '240', 'D']
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            default: linear
+            enum: [linear, spot, inverse]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 200
+            minimum: 50
+            maximum: 1000
+      responses:
+        '200':
+          description: Current market state and calculated analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  symbol:
+                    type: string
+                  category:
+                    type: string
+                  interval:
+                    type: string
+                  candles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start_ms:
+                          type: integer
+                        open:
+                          type: number
+                        high:
+                          type: number
+                        low:
+                          type: number
+                        close:
+                          type: number
+                        volume:
+                          type: number
+                        turnover:
+                          type: number
+                          nullable: true
+                  analysis:
+                    type: object
+                    properties:
+                      price:
+                        type: number
+                      sma:
+                        type: object
+                      dmi_adx:
+                        type: object
+                      volume:
+                        type: object
+                      scores:
+                        type: object
+                      setup:
+                        type: string
+                      action:
+                        type: string
+                      reasons:
+                        type: array
+                        items:
+                          type: string

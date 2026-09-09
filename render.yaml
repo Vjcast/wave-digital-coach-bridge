@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: wave-digital-coach-bridge
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: BYBIT_BASE_URL
+        value: https://api.bybit.com
+      - key: ALLOWED_SYMBOLS
+        value: BTCUSDT,ETHUSDT,SOLUSDT,XRPUSDT,ADAUSDT
