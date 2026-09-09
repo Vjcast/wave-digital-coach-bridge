@@ -120,11 +120,92 @@ def slope_pct(series: list[float | None], lookback: int = 3) -> float | None:
     return (latest - previous) / previous * 100.0
 
 
+def slope_delta(series: list[float | None], lookback: int = 1) -> float | None:
+    if lookback <= 0 or len(series) <= lookback:
+        return None
+    latest = series[-1]
+    previous = series[-1 - lookback]
+    if latest is None or previous is None:
+        return None
+    return latest - previous
+
+
 def latest_non_null(series: Iterable[float | None]) -> float | None:
     for value in reversed(list(series)):
         if value is not None:
             return value
     return None
+
+
+def _round(value: float | None, ndigits: int = 6) -> float | None:
+    return round(value, ndigits) if value is not None else None
+
+
+def _slope_sticker(value: float | None, flat_threshold: float) -> str:
+    if value is None:
+        return "⚪?"
+    if value > flat_threshold:
+        return "🟢↑"
+    if value < -flat_threshold:
+        return "🔴↓"
+    return "🟡↔"
+
+
+def _minus_di_sticker(value: float | None, flat_threshold: float = 0.5) -> str:
+    if value is None:
+        return "⚪?"
+    if value > flat_threshold:
+        return "🔴↑"
+    if value < -flat_threshold:
+        return "🔴↓"
+    return "🟡↔"
+
+
+def _plus_di_sticker(value: float | None, flat_threshold: float = 0.5) -> str:
+    if value is None:
+        return "⚪?"
+    if value > flat_threshold:
+        return "🟢↑"
+    if value < -flat_threshold:
+        return "🟢↓"
+    return "🟡↔"
+
+
+def _spread_sticker(change: float | None, plus_dominates: bool, minus_dominates: bool, flat_threshold: float = 0.5) -> str:
+    if change is None:
+        return "⚪?"
+    if abs(change) <= flat_threshold:
+        return "🟡↔"
+    if change > 0 and minus_dominates:
+        return "🔴↗"
+    if change > 0 and plus_dominates:
+        return "🟢↗"
+    if change < 0:
+        return "🟡↘"
+    return "⚪?"
+
+
+def _distance_label(distance_pct: float | None) -> str:
+    if distance_pct is None:
+        return "unknown"
+    abs_distance = abs(distance_pct)
+    if abs_distance <= 0.10:
+        return "near"
+    if abs_distance <= 0.25:
+        return "normal"
+    return "extended"
+
+
+def _volume_quality(ratio_pct: float | None) -> str:
+    if ratio_pct is None:
+        return "unknown"
+    if ratio_pct < 35:
+        return "very_low"
+    if ratio_pct < 50:
+        return "low"
+    if ratio_pct < 100:
+        return "below_average"
+    return "healthy_or_high"
 
 
 def assess_structure(candles: list[Candle]) -> dict[str, Any]:
@@ -146,9 +227,19 @@ def assess_structure(candles: list[Candle]) -> dict[str, Any]:
     last_vol = volumes[-1]
     last_vol_ma20 = latest_non_null(vol_ma20)
 
-    sma20_slope = slope_pct(sma20, 3)
-    sma9_slope = slope_pct(sma9, 3)
-    sma3_slope = slope_pct(sma3, 3)
+    sma3_slope_1 = slope_pct(sma3, 1)
+    sma3_slope_2 = slope_pct(sma3, 2)
+    sma3_slope_3 = slope_pct(sma3, 3)
+    sma9_slope_2 = slope_pct(sma9, 2)
+    sma9_slope_3 = slope_pct(sma9, 3)
+    sma20_slope_3 = slope_pct(sma20, 3)
+    sma20_slope_5 = slope_pct(sma20, 5)
+
+    plus_di_slope_1 = slope_delta(dmi["plus_di"], 1)
+    plus_di_slope_3 = slope_delta(dmi["plus_di"], 3)
+    minus_di_slope_1 = slope_delta(dmi["minus_di"], 1)
+    minus_di_slope_3 = slope_delta(dmi["minus_di"], 3)
+    adx_slope_3 = slope_delta(dmi["adx"], 3)
 
     bullish_stack = bool(last_sma3 and last_sma9 and last_sma20 and last_sma3 > last_sma9 > last_sma20)
     bearish_stack = bool(last_sma3 and last_sma9 and last_sma20 and last_sma3 < last_sma9 < last_sma20)
@@ -168,9 +259,29 @@ def assess_structure(candles: list[Candle]) -> dict[str, Any]:
     if sma_gap_3_9_pct is not None and sma_gap_9_20_pct is not None:
         compressed = sma_gap_3_9_pct < 0.03 and sma_gap_9_20_pct < 0.05
 
+    price_to_sma9_pct = None
     price_to_sma20_pct = None
+    if last_sma9:
+        price_to_sma9_pct = (last_close - last_sma9) / last_sma9 * 100.0
     if last_sma20:
         price_to_sma20_pct = (last_close - last_sma20) / last_sma20 * 100.0
+
+    di_spread = None
+    if last_plus_di is not None and last_minus_di is not None:
+        di_spread = abs(last_plus_di - last_minus_di)
+
+    plus_di_series = dmi["plus_di"]
+    minus_di_series = dmi["minus_di"]
+    di_spread_series: list[float | None] = [
+        abs(p - m) if p is not None and m is not None else None
+        for p, m in zip(plus_di_series, minus_di_series)
+    ]
+    di_spread_change_1 = slope_delta(di_spread_series, 1)
+    di_spread_change_3 = slope_delta(di_spread_series, 3)
+
+    volume_ratio_to_ma20 = None
+    if last_vol_ma20 and last_vol_ma20 > 0:
+        volume_ratio_to_ma20 = last_vol / last_vol_ma20 * 100.0
 
     long_score = 0
     short_score = 0
@@ -182,9 +293,9 @@ def assess_structure(candles: list[Candle]) -> dict[str, Any]:
     if bearish_stack:
         short_score += 2
         reasons.append("SMA3<SMA9<SMA20")
-    if sma20_slope is not None and sma20_slope > 0:
+    if sma20_slope_3 is not None and sma20_slope_3 > 0:
         long_score += 1
-    if sma20_slope is not None and sma20_slope < 0:
+    if sma20_slope_3 is not None and sma20_slope_3 < 0:
         short_score += 1
     if above_sma20:
         long_score += 1
@@ -223,30 +334,108 @@ def assess_structure(candles: list[Candle]) -> dict[str, Any]:
         setup = "WAIT"
         action = "Esperar confirmación; no hay ventaja limpia."
 
-    return {
-        "price": round(last_close, 8),
-        "sma": {
-            "sma3": round(last_sma3, 8) if last_sma3 is not None else None,
-            "sma9": round(last_sma9, 8) if last_sma9 is not None else None,
-            "sma20": round(last_sma20, 8) if last_sma20 is not None else None,
-            "sma3_slope_3": round(sma3_slope, 6) if sma3_slope is not None else None,
-            "sma9_slope_3": round(sma9_slope, 6) if sma9_slope is not None else None,
-            "sma20_slope_3": round(sma20_slope, 6) if sma20_slope is not None else None,
-            "gap_3_9_pct": round(sma_gap_3_9_pct, 6) if sma_gap_3_9_pct is not None else None,
-            "gap_9_20_pct": round(sma_gap_9_20_pct, 6) if sma_gap_9_20_pct is not None else None,
-            "price_to_sma20_pct": round(price_to_sma20_pct, 6) if price_to_sma20_pct is not None else None,
-            "compressed": compressed,
+    if volume_ratio_to_ma20 is not None and volume_ratio_to_ma20 < 35 and setup in {"LONG_CANDIDATE", "SHORT_CANDIDATE"}:
+        setup = "WAIT_WEAK_VOLUME"
+        action = "Esperar: el volumen actual es extremadamente bajo frente a MA20."
+
+    operational_view = {
+        "price": {
+            "value": round(last_close, 8),
+            "to_sma9_pct": _round(price_to_sma9_pct, 6),
+            "to_sma20_pct": _round(price_to_sma20_pct, 6),
+            "zone_vs_sma9": _distance_label(price_to_sma9_pct),
+            "zone_vs_sma20": _distance_label(price_to_sma20_pct),
         },
-        "dmi_adx": {
-            "plus_di": round(last_plus_di, 4) if last_plus_di is not None else None,
-            "minus_di": round(last_minus_di, 4) if last_minus_di is not None else None,
-            "adx": round(last_adx, 4) if last_adx is not None else None,
+        "sma3": {
+            "value": _round(last_sma3, 8),
+            "slope_1_pct": _round(sma3_slope_1, 6),
+            "slope_2_pct": _round(sma3_slope_2, 6),
+            "sticker": _slope_sticker(sma3_slope_1, 0.005),
+        },
+        "sma9": {
+            "value": _round(last_sma9, 8),
+            "slope_2_pct": _round(sma9_slope_2, 6),
+            "slope_3_pct": _round(sma9_slope_3, 6),
+            "sticker": _slope_sticker(sma9_slope_2, 0.005),
+        },
+        "sma20": {
+            "value": _round(last_sma20, 8),
+            "slope_3_pct": _round(sma20_slope_3, 6),
+            "slope_5_pct": _round(sma20_slope_5, 6),
+            "sticker": _slope_sticker(sma20_slope_3, 0.005),
+        },
+        "plus_di": {
+            "value": _round(last_plus_di, 4),
+            "slope_1": _round(plus_di_slope_1, 4),
+            "slope_3": _round(plus_di_slope_3, 4),
+            "sticker": _plus_di_sticker(plus_di_slope_1),
+        },
+        "minus_di": {
+            "value": _round(last_minus_di, 4),
+            "slope_1": _round(minus_di_slope_1, 4),
+            "slope_3": _round(minus_di_slope_3, 4),
+            "sticker": _minus_di_sticker(minus_di_slope_1),
+        },
+        "di_spread": {
+            "value": _round(di_spread, 4),
+            "change_1": _round(di_spread_change_1, 4),
+            "change_3": _round(di_spread_change_3, 4),
+            "sticker": _spread_sticker(di_spread_change_1, plus_dominates, minus_dominates),
+        },
+        "adx": {
+            "value": _round(last_adx, 4),
+            "slope_3": _round(adx_slope_3, 4),
+            "sticker": _slope_sticker(adx_slope_3, 0.5),
         },
         "volume": {
             "last": round(last_vol, 8),
-            "ma20": round(last_vol_ma20, 8) if last_vol_ma20 is not None else None,
+            "ma20": _round(last_vol_ma20, 8),
+            "ratio_to_ma20_pct": _round(volume_ratio_to_ma20, 2),
+            "quality": _volume_quality(volume_ratio_to_ma20),
+            "sticker": "⚠️" if volume_ratio_to_ma20 is not None and volume_ratio_to_ma20 < 50 else "🟢",
+        },
+    }
+
+    return {
+        "price": round(last_close, 8),
+        "sma": {
+            "sma3": _round(last_sma3, 8),
+            "sma9": _round(last_sma9, 8),
+            "sma20": _round(last_sma20, 8),
+            "sma3_slope_1_pct": _round(sma3_slope_1, 6),
+            "sma3_slope_2_pct": _round(sma3_slope_2, 6),
+            "sma3_slope_3_pct": _round(sma3_slope_3, 6),
+            "sma9_slope_2_pct": _round(sma9_slope_2, 6),
+            "sma9_slope_3_pct": _round(sma9_slope_3, 6),
+            "sma20_slope_3_pct": _round(sma20_slope_3, 6),
+            "sma20_slope_5_pct": _round(sma20_slope_5, 6),
+            "gap_3_9_pct": _round(sma_gap_3_9_pct, 6),
+            "gap_9_20_pct": _round(sma_gap_9_20_pct, 6),
+            "price_to_sma9_pct": _round(price_to_sma9_pct, 6),
+            "price_to_sma20_pct": _round(price_to_sma20_pct, 6),
+            "compressed": compressed,
+        },
+        "dmi_adx": {
+            "plus_di": _round(last_plus_di, 4),
+            "minus_di": _round(last_minus_di, 4),
+            "adx": _round(last_adx, 4),
+            "plus_di_slope_1": _round(plus_di_slope_1, 4),
+            "plus_di_slope_3": _round(plus_di_slope_3, 4),
+            "minus_di_slope_1": _round(minus_di_slope_1, 4),
+            "minus_di_slope_3": _round(minus_di_slope_3, 4),
+            "adx_slope_3": _round(adx_slope_3, 4),
+            "di_spread": _round(di_spread, 4),
+            "di_spread_change_1": _round(di_spread_change_1, 4),
+            "di_spread_change_3": _round(di_spread_change_3, 4),
+        },
+        "volume": {
+            "last": round(last_vol, 8),
+            "ma20": _round(last_vol_ma20, 8),
+            "ratio_to_ma20_pct": _round(volume_ratio_to_ma20, 2),
+            "quality": _volume_quality(volume_ratio_to_ma20),
             "above_ma20": bool(last_vol_ma20 and last_vol > last_vol_ma20),
         },
+        "operational_view": operational_view,
         "scores": {"long": long_score, "short": short_score},
         "setup": setup,
         "action": action,
