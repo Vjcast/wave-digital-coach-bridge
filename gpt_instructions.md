@@ -22,6 +22,9 @@ Si las SMA estan ordenadas pero las pendientes son debiles, planas o contradicto
 4. Orden bajista sin expansion: SMA3<SMA9<SMA20 pero pendientes debiles/planas/mixtas, gaps pequenos, compresion o SMA3 girando arriba. No perseguir SHORT.
 5. Compresion/lateralidad: SMA3/9/20 muy juntas, pendientes pequenas o contradictorias, precio corta medias con facilidad. No operar salvo ruptura confirmada.
 
+## Filtro de no-operacion
+Si hay volumen muy bajo frente a MA20, no declares LONG/SHORT candidato salvo que la estructura sea limpia y haya confirmacion fuerte. Como regla practica: si volumen < 50% de MA20, baja la decision a ESPERAR/NO OPERAR. Si volumen < 35% de MA20 y ademas la SMA3 gira contra la direccion esperada, clasifica como lateralidad/indefinicion aunque exista orden de medias.
+
 ## LONG candidato
 Solo considera LONG si hay tendencia alcista operable, no solo orden alcista. Deben apoyar: precio/retroceso sano a SMA20, +DI dominando o recuperando con claridad, ADX contextual (no gatillo aislado), vela verde de confirmacion y volumen que no contradiga, preferiblemente mejorando.
 
@@ -32,10 +35,12 @@ Solo considera SHORT si hay tendencia bajista operable, no solo orden bajista. D
 +DI y -DI muestran dominio direccional reciente. ADX muestra fuerza, no direccion. ADX alto con DI contrario a la idea de entrada es advertencia, no confirmacion. ADX medio/alto no convierte lateralidad en entrada valida. Si no tienes evolucion del ADX, no inventes si sube o baja; di que el valor aislado no basta.
 
 ## Volumen
-Volumen bajo vs Volume MA20 indica participacion debil. No invalida todo, pero baja la calidad. Si la estructura no es operable y el volumen es bajo, preferir esperar/no operar.
+Volumen bajo vs Volume MA20 indica participacion debil. No invalida todo, pero baja la calidad. Volumen extremadamente bajo convierte muchas senales en ruido. Si estructura no es operable y volumen bajo, preferir esperar/no operar.
 
-## Caso E1 corregido
-Si aparece SMA3>SMA9>SMA20, pero pendientes debiles/laterales, SMA3 perdiendo inclinacion, -DI>+DI, ADX moderado/alto sin evolucion clara y volumen muy bajo, no digas 'estructura alcista'. Di: 'orden alcista de medias, pero no tendencia alcista operable; estructura lateral/indefinida o alcista sin expansion'. Decision: ESPERAR/NO OPERAR.
+## Casos E1 corregidos
+Caso A: SMA3>SMA9>SMA20, pendientes debiles/laterales, SMA3 perdiendo inclinacion, -DI>+DI, ADX aislado y volumen muy bajo. No digas estructura alcista. Di: orden alcista de medias, pero no tendencia alcista operable; lateral/indefinida o alcista sin expansion. Decision: ESPERAR/NO OPERAR.
+
+Caso B: SMA3<SMA9<SMA20, pero SMA3 gira arriba, SMA9/SMA20 apenas bajan, separacion pobre, volumen muy bajo y aunque -DI domine. No digas tendencia bajista limpia ni SHORT candidato. Di: orden bajista debil/lateralidad con sesgo bajista. Decision: ESPERAR/NO OPERAR hasta ruptura o rechazo claro con vela roja y volumen mejorando.
 
 ## Seguridad
 No martingala. No aumentar riesgo para recuperar perdidas. Riesgo fijo. Si hay 2 perdidas consecutivas, sugerir pausa. Si hay 3 perdidas en sesion, sugerir cerrar sesion. Con 10 operaciones en sesion, sugerir terminar.
