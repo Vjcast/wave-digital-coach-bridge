@@ -15,6 +15,20 @@ La estrategia es continuacion por retroceso a SMA9/SMA20:
 Regla maestra:
 La entrada no nace en la caida ni en la subida extendida. Nace en el fracaso del retroceso.
 
+## Lo que Victor quiere recibir del GPT
+Cuando el GPT diga ESPERAR, debe convertir esa espera en un mapa operativo educativo. No basta responder "esperar". Debe decir que datos concretos debe observar Victor para que la operacion se vuelva candidata.
+
+Debe entregar:
+1. Zona teorica de espera.
+2. Gatillo de entrada.
+3. Confirmaciones necesarias.
+4. Invalidacion.
+5. Por que no entrar ahora.
+6. Pregunta de entrenamiento.
+
+Ejemplo de salida deseada:
+"Ahora no se entra porque el precio esta extendido. Lo optimo teorico seria esperar rebote hacia SMA9/SMA20. La operacion se vuelve candidata si el rebote fracasa con vela roja de rechazo, -DI mantiene o recupera dominio, el spread DI vuelve a abrirse a favor de -DI y el volumen de la vela roja mejora o no contradice. Se invalida si cierra limpio sobre SMA20 o si +DI toma dominio."
+
 ## Aporte critico de Victor
 En la imagen de referencia, el primer circulo rojo no representa necesariamente una tendencia bajista madura. En ese momento los DI estaban juntos. Eso cambia la lectura:
 - DI juntos no significan tendencia clara.
@@ -72,6 +86,47 @@ Para continuacion alcista:
 - Aparece vela verde de rechazo/recuperacion.
 - +DI domina o recupera dominio.
 - Ideal: +DI sube o se mantiene, -DI cae/debil, spread DI aumenta a favor de +DI.
+
+## Plan teorico de entrada optima
+
+### Si el sesgo es SHORT pero el precio esta extendido
+No vender en extension. El GPT debe orientar asi:
+- Zona a esperar: rebote hacia SMA9 o cerca de SMA20.
+- Lo bueno: rebote con volumen bajo o decreciente; indica debilidad del retroceso.
+- Gatillo: vela roja de rechazo cerca de SMA9/SMA20, preferible con mecha superior o cierre rechazando la zona.
+- Confirmacion SMA: SMA9/SMA20 siguen inclinadas abajo o no se aplanan; SMA3 deja de subir y gira abajo.
+- Confirmacion DI: -DI mantiene/recupera dominio; +DI no logra superar; spread DI empieza a abrirse a favor de -DI.
+- Confirmacion volumen: en la vela roja de rechazo el volumen mejora respecto al retroceso o al menos no es extremadamente bajo.
+- Entrada teorica: despues del cierre de la vela roja de rechazo, no antes.
+- Invalidacion: cierre fuerte sobre SMA20, SMA20 plana/girando arriba, +DI tomando dominio y spread DI contra el short, precio creando maximos mas altos.
+- Objetivo educativo: retorno a minimo previo o extension prudente; no prometer ganancia.
+
+### Si el sesgo es LONG pero el precio esta extendido
+No comprar en extension. El GPT debe orientar asi:
+- Zona a esperar: retroceso hacia SMA9 o cerca de SMA20.
+- Lo bueno: retroceso con volumen bajo o decreciente; indica debilidad vendedora.
+- Gatillo: vela verde de rechazo/recuperacion cerca de SMA9/SMA20, preferible con mecha inferior o cierre recuperando la zona.
+- Confirmacion SMA: SMA9/SMA20 siguen inclinadas arriba o no se aplanan; SMA3 deja de caer y gira arriba.
+- Confirmacion DI: +DI mantiene/recupera dominio; -DI no logra superar; spread DI se abre a favor de +DI.
+- Confirmacion volumen: en la vela verde de recuperacion el volumen mejora o no contradice.
+- Entrada teorica: despues del cierre de la vela verde de confirmacion, no antes.
+- Invalidacion: cierre fuerte bajo SMA20, SMA20 plana/girando abajo, -DI tomando dominio y spread DI contra el long, precio creando minimos mas bajos.
+
+### Si hay lateralidad
+No dar entrada optima. Dar plan de vigilancia:
+- Esperar que las SMA se separen y que SMA20 deje de estar plana.
+- Esperar que +DI o -DI se separe con claridad.
+- Esperar que el precio respete SMA9/SMA20 como soporte/resistencia dinamica.
+- Hasta entonces: NO OPERAR.
+
+### Si hay nacimiento de tendencia
+La entrada es temprana y mas riesgosa. El GPT debe advertirlo.
+Para nacimiento bajista:
+- DI venian juntos y -DI empieza a separarse.
+- SMA3/SMA9 empiezan a girar abajo.
+- Precio falla en SMA9/SMA20.
+- Se necesita vela roja clara y preferible volumen de confirmacion.
+Para nacimiento alcista, logica inversa.
 
 ## Pendientes: lectura dinamica
 No basta mirar valores actuales. Hay que medir direccion y aceleracion.
@@ -172,7 +227,7 @@ El GPT debe clasificar la fase antes de decidir.
 - Entrada llegaria tarde.
 - DI empieza a perder pendiente o spread se reduce.
 - ADX puede seguir alto por movimiento pasado.
-- Decision: no perseguir; esperar retroceso.
+- Decision: no perseguir; esperar retroceso y explicar el punto optimo.
 
 ## Casos E1 corregidos
 
@@ -205,6 +260,17 @@ Respuesta correcta:
 
 Respuesta correcta:
 "El sesgo bajista mejora, pero el volumen es extremadamente bajo. No perseguir. Esperar retroceso a SMA9/SMA20, rechazo rojo o volumen de confirmacion. Decision: ESPERAR."
+
+### E5-D: tendencia bajista madura pero entrada extendida
+- Tendencia bajista madura.
+- SMA3 < SMA9 < SMA20.
+- Pendientes negativas y separacion clara.
+- Precio bastante debajo de SMA9/SMA20.
+- -DI domina y ADX fuerte.
+- Volumen actual bajo.
+
+Respuesta correcta:
+"No perseguir el SHORT. El sesgo bajista existe, pero el punto teorico optimo es esperar rebote hacia SMA9/SMA20. La entrada candidata aparece si ese rebote fracasa con vela roja de rechazo, -DI mantiene/recupera dominio, spread DI vuelve a abrirse a favor de -DI y el volumen de confirmacion mejora o no contradice. Se invalida si el precio cierra limpio sobre SMA20 o +DI toma dominio."
 
 ## Variables que conviene calcular en API
 Para que el GPT dependa menos de interpretacion visual, el backend deberia devolver:
